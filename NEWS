@@ -1,0 +1,44 @@
+= svHttp News
+
+== Changes in svHttp 0.9-52
+
+* Functions to manage the SciViews HTTP server have been moved from svGUI 0.9-51
+  to here.
+
+
+Transcript of changes concerning the HTTP server from svGUI
+
+== Changes in svGUI 0.9-51
+
+* HTTP server now works with the new version of captureAll() from svMisc 0.9-62
+  and it is compatible with its echo = and split = arguments.
+
+
+== Changes in svGUI 0.9-50
+
+* HTTP server now works correctly with incomplete commands (bug corrected).
+
+
+== Changes in svGUI 0.9-49
+
+* HTTP server code processing now uses parseText() of svMisc >= 0.9-60 instead
+  of the deprecated Parse() function.
+
+
+== Changes in svGUI 0.9-48
+
+* The R http server is modified to work with either RJsonP calls, or with plain
+  text exchange, as the SciViews socket server works. RJsonP objects returned
+  use list() to create lists, but also structures or new S4 objects.
+
+
+== Changes in svGUI 0.9-47
+
+* A new series of function to communication with a SciViews GUI client like
+  Komodo/SciViews-K by using the R http help server is added. It offers a
+  tcltk-free alternative to the svSocket server.
+  
+* The package no longer starts the socket server implemented in svSocket and it
+  does not import svSocket any more. As the HTTP server is an alternative, one
+  could now choose to run SciViews communication through the HTTP server without
+  using svSocket, and thus, without starting Tcl/Tk any more.
