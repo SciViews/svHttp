@@ -4,7 +4,18 @@
 
 * Functions to manage the SciViews HTTP server have been moved from svGUI 0.9-51
   to here.
-
+  
+* The SciViews HTTP server was broken under R 2.13.0 because of wrong arguments
+  in the function called by HTTP clients. Fixed now.
+  
+* The SciViews HTTP server cannot accept very long instructions (they are
+  truncated). In such a case, write the instructions in a file instead and pass
+  SOURCE=<filepath> as message. Note that the temporary file is deleted by the
+  HTTP server after use. The maximum length of the request is perhaps different
+  from one to the other system (I had little problems on Mac OS X). It is
+  probably safe to use a file if argument is more than 100 characters long. Note
+  that encoding for this temporary file is assumed to be UTF-8!
+  
 
 Transcript of changes concerning the HTTP server from svGUI
 

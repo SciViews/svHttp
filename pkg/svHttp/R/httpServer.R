@@ -161,12 +161,40 @@ name = HttpServerName())
 		
 		## Install the SciViews function that will process our requests
 		e <- tools:::.httpd.handlers.env
-		e[["SciViews"]] <- function (path, query, body) {
+		e[["SciViews"]] <- function (path, query, body, ...) {
 			## Analyze the query: command + callback
 			#cat(query, "\n", sep = " -- ")
 			msg <- query[1]
+
+#			## Strings are supposed to be send in UTF-8 format
+#			Encoding(msg) <- "UTF-8"
+#			msg <- enc2native(msg)
+
 			l <- length(query)
-			if (l > 1) callback <- query[l] else callback <- NULL
+			if (l == 1) callback <- NULL else {
+				callback <- query[l]
+#				Encoding(callback) <- "UTF-8"
+			}
+			
+			## The HTTP request message cannot be too long.
+			## So, for submission of very long R code, this mechanism
+			## is not appropriate. Here we use a specially formatted msg
+			## indicating that we should read code from a file instead.
+			if (regexpr("^SOURCE=", msg) > 0) {
+				srcfile <- sub("^SOURCE=", "", msg)
+				on.exit(try(unlink(srcfile), silent = TRUE))
+				if (!file.exists(srcfile) || inherits(msg <-
+					try(readLines(srcfile, warn = FALSE, encoding = "UTF-8"),
+						silent = TRUE), "try-error")) {
+					res <- paste(
+						gettext("Error: missing or unreadable source file"),
+						" '", srcfile, "'\n", sep = "")
+					cat(res)
+					if (is.null(callback)) {
+						return(NULL)
+					} else return(Rjsonp(NULL, callback))
+				} else msg <- paste(msg, collapse = "\n")
+			}
 			
 			## Get the server name and port, and R encoding
 			servername <- HttpServerName()
@@ -196,6 +224,7 @@ name = HttpServerName())
 					res <- encodeString(res, quote = '"')
 					
 					## Check encoding and provide it if it is not UTF-8
+					## No, provide it all the time!
 					cs <- localeToCharset()[1]
 					if (cs != "UTF-8") {
 						encode <- paste (', "encoding" := "', cs, '"', sep = "")
@@ -207,6 +236,8 @@ name = HttpServerName())
 						'), "options" := ', options,
 						', "name" := "', servername,
 						'", "port" := ', serverport, encode, '))', sep = "")
+					## Encode this string as UTF-8
+					obj <- enc2utf8(obj)
 				}
 				#cat(obj, "\n")
 				return(list(obj))
@@ -315,7 +346,10 @@ name = HttpServerName())
 			    sub("^[^:]+: ([^\n]+)\n[0-9]+:(.*)$", "\\1\\2", expr), sep = "")
 			    if (Echo) cat(res)
 			    if (is.null(callback)) {
-					return(paste(res, pars$last, Prompt, sep = ""))
+					ret <- paste(res, pars$last, Prompt, sep = "")
+					## Encode this as UTF-8
+					ret <- enc2utf8(ret)
+					return(ret)
 				} else {
 					return(Rjsonp(paste(res, pars$last, Prompt, sep = ""),
 						callback))
@@ -328,7 +362,10 @@ name = HttpServerName())
 					pars$code <- msg
 					if (is.null(callback)) {
 						if (returnResults) {
-							return(paste(pars$last, Continue, sep = ""))
+							ret <- paste(pars$last, Continue, sep = "")
+							## Encode this as UTF-8
+							ret <- enc2utf8(ret)
+							return(ret)
 						} else return(NULL)	
 					} else {
 						if (returnResults) {
@@ -343,7 +380,10 @@ name = HttpServerName())
 					if (Echo) cat(res)
 					if (is.null(callback)) {
 						if (returnResults) {
-							return(paste(res, pars$last, Prompt, sep = ""))
+							ret <- paste(res, pars$last, Prompt, sep = "")
+							## Encode this as UTF-8
+							ret <- enc2utf8(ret)
+							return(ret)
 						} else return(NULL)
 					} else {
 						if (returnResults) {
@@ -358,7 +398,10 @@ name = HttpServerName())
 			## Is it something to evaluate?
 			if (length(expr) < 1) {
 				if (is.null(callback)) {
-					return(paste(pars$last, Prompt, sep = ""))
+					ret <- paste(pars$last, Prompt, sep = "")
+					## Encode this as UTF-8
+					ret <- enc2utf8(ret)
+					return(ret)
 				} else {
 					return(Rjsonp(paste(pars$last, Prompt, sep = ""), callback))
 				}
@@ -366,6 +409,7 @@ name = HttpServerName())
 			## Correct code,... we evaluate it
 			results <- captureAll(expr, echo = Echo, split = Echo)
 			## Should we run taskCallbacks?
+			# Note: these are installed in svKomodo package
 			if (!hiddenMode) {
 				h <- getTemp(".svTaskCallbackManager", default = NULL,
 					mode = "list")
@@ -385,6 +429,7 @@ name = HttpServerName())
 			results <- paste(results, pars$last, Prompt, sep = "")
 			## Return the results in plain text, or RJSONP object
 			if (is.null(callback)) {
+				results <- enc2utf8(results)
 				return(results)
 			} else {
 				return(Rjsonp(results, callback))
@@ -392,4 +437,10 @@ name = HttpServerName())
 		}
 	}	
 	return(invisible(curport))
+}
+
+.Last.lib <- function (libpath)
+{
+    ## Make sure that the SciViews Http server is closed
+	stopHttpServer(TRUE)
 }
