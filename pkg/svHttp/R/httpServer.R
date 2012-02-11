@@ -439,8 +439,16 @@ name = HttpServerName())
 	return(invisible(curport))
 }
 
-.Last.lib <- function (libpath)
+.onLoad <- function (lib, pkg)
 {
-    ## Make sure that the SciViews Http server is closed
+	## Try starting the Http server
+	#try(startHttpServer(), silent = TRUE)
+}
+
+.onUnload <- function (libpath)
+{
+	## Make sure that the SciViews Http server is closed
 	stopHttpServer(TRUE)
 }
+
+.packageName <- "svHttp"
