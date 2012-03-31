@@ -1,5 +1,11 @@
 = svHttp News
 
+== Changes in svHttp 0.9-53
+
+* If the Http server is not started, .onUnload() failed in
+  tools::startDynamicHelp(FALSE). Fixed.
+  
+
 == Changes in svHttp 0.9-52
 
 * Functions to manage the SciViews HTTP server have been moved from svGUI 0.9-51
