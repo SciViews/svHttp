@@ -115,7 +115,7 @@ stopHttpServer <- function (remove.clients = FALSE)
 			envir = TempEnv())
 	
 	## Stop the HTTP deamon
-	tools::startDynamicHelp(FALSE)
+	try(tools::startDynamicHelp(FALSE), silent = TRUE)
 }
 
 ## (Re)start HTTP help server on the choosen port
