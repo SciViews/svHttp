@@ -1,5 +1,9 @@
 = svHttp News
 
+== Changes in svHttp 0.9-54
+
+* NEWS file reworked to use the new Rd format.
+
 == Changes in svHttp 0.9-53
 
 * If the Http server is not started, .onUnload() failed in
