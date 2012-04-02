@@ -9,7 +9,7 @@ Author: Philippe Grosjean
 Maintainer: Philippe Grosjean <phgrosjean@sciviews.org>
 Depends: R (>= 2.11.0)
 Imports: tools, svMisc (>= 0.9-62)
-Suggests: svSocket (>= 0.9-52)
+Suggests: svSocket
 Description: Implements a simple HTTP server allowing to connect GUI clients to R
 License: GPL-2
 URL: http://www.sciviews.org/SciViews-R
