@@ -4,6 +4,8 @@
 \section{Changes in version 0.9-54}{
 	\itemize{
     \item{ NEWS file reworked to use the new Rd format. }
+	\item{ Temporary data are now saved in SciViews:TempEnv environment
+	  (was TempEnv), and one thus needs     s svMisc >= 0.9-68. }
   }
 }
 

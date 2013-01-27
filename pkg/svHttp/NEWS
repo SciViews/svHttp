@@ -4,6 +4,10 @@
 
 * NEWS file reworked to use the new Rd format.
 
+* Temporary data are now saved in SciViews:TempEnv environment (was TempEnv),
+  and one thus needs svMisc >= 0.9-68.
+
+
 == Changes in svHttp 0.9-53
 
 * If the Http server is not started, .onUnload() failed in
