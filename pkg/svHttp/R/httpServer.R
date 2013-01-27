@@ -73,7 +73,7 @@ parHttp <- function (client, ...)
 		e$multiline <- TRUE  # Allow for multiline code
 		e$bare <- TRUE       # Always start in "bare" mode
 		## Note: in bare mode, all other parameters are inactive!
-		## and assign it to TempEnv
+		## and assign it to SciViews:TempEnv
 		assign(sc, e, envir = TempEnv())
 	} else e <- get(sc, envir = TempEnv(), mode = "environment")
 	
