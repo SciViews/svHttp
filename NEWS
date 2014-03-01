@@ -2,6 +2,13 @@
 
 == Changes in svHttp 0.9-54
 
+* LICENSE file eliminated.
+
+* No more use of ::: (not allowed by CRAN).
+
+
+== Changes in svHttp 0.9-54
+
 * NEWS file reworked to use the new Rd format.
 
 * Temporary data are now saved in SciViews:TempEnv environment (was TempEnv),

@@ -1,7 +1,7 @@
 Package: svHttp
 Type: Package
-Version: 0.9-54
-Date: 2012-04-02
+Version: 0.9-55
+Date: 2014-03-01
 Title: SciViews GUI API - R HTTP server
 Authors@R: c(person("Philippe", "Grosjean", role = c("aut", "cre"),
   email = "phgrosjean@sciviews.org"))

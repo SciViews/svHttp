@@ -21,8 +21,7 @@ HttpServerPort <- function (port)
 		## This port is stored in 'ko.serve' option
 		options(ko.serve = port)
 		## If the server is running on another port, restart it now
-		## TODO: avoid using ::: here => how to get it "officially"?
-		curport <- tools:::httpdPort
+		curport <- getNamespace("tools")$httpdPort
 		if (curport > 0 && curport != port) startHttpServer(port = port)
 		return(port)
 	} else {  # Get the server port
@@ -107,8 +106,7 @@ parHttp <- function (client, ...)
 stopHttpServer <- function (remove.clients = FALSE)
 {
 	## Eliminate the SciViews custom process function for HTTP server
-	## TODO: how to get it without using ::: ?
-	e <- tools:::.httpd.handlers.env
+	e <- getNamespace("tools")$.httpd.handlers.env
 	if ("SciViews" %in% ls(envir = e)) rm(list = "SciViews", envir = e)
 	
 	## Do we also remove persistent data for clients?
@@ -134,8 +132,7 @@ name = HttpServerName())
 		stop("'port' must be a positive integer!")
 	port <- as.integer(round(port[1]))
 	## The port on which the server currently runs
-	## TODO: how to get it without using ::: ?
-	curport <- tools:::httpdPort
+	curport <- getNamespace("tools")$httpdPort
 	
 	## Can we run the server?
 	if (curport == -1L || nzchar(Sys.getenv("R_DISABLE_HTTPD")))
@@ -163,8 +160,7 @@ name = HttpServerName())
 		HttpServerName(name)
 		
 		## Install the SciViews function that will process our requests
-		## TODO: how to get it without using ::: ?
-		e <- tools:::.httpd.handlers.env
+		e <- getNamespace("tools")$.httpd.handlers.env
 		e[["SciViews"]] <- function (path, query, body, ...) {
 			## Analyze the query: command + callback
 			#cat(query, "\n", sep = " -- ")
