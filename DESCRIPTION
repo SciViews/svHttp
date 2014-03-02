@@ -3,9 +3,9 @@ Type: Package
 Version: 0.9-55
 Date: 2014-03-01
 Title: SciViews GUI API - R HTTP server
+Author: Philippe Grosjean [aut, cre]
 Authors@R: c(person("Philippe", "Grosjean", role = c("aut", "cre"),
   email = "phgrosjean@sciviews.org"))
-Author: Philippe Grosjean
 Maintainer: Philippe Grosjean <phgrosjean@sciviews.org>
 Depends: R (>= 2.11.0)
 Imports: tools, svMisc (>= 0.9-68)
