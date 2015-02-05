@@ -14,8 +14,8 @@
   \tabular{ll}{
     Package: \tab svHttp\cr
     Type: \tab Package\cr
-    Version: \tab 0.9-55\cr
-    Date: \tab 2012-03-01\cr
+    Version: \tab 0.9-56\cr
+    Date: \tab 2015-02-05\cr
     License: \tab GPL 2 or above, at your convenience\cr
   }
   % TODO: add description of main functions here. Also add examples

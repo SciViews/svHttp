@@ -1,6 +1,12 @@
 = svHttp News
 
-== Changes in svHttp 0.9-54
+== Changes in svHttp 0.9-56
+
+* Starting from R revision >= 67550, the HTML help port is now retrieved using
+  tools::startDynamicHelp(NA).
+  
+
+== Changes in svHttp 0.9-55
 
 * LICENSE file eliminated.
 

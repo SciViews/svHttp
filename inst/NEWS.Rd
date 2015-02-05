@@ -1,11 +1,25 @@
 \name{NEWS}
 \title{NEWS file for the svHttp package}
 
+\section{Changes in version 0.9-56}{
+	\itemize{
+    \item{ Starting from R revision >= 67550, the HTML help port is now
+		retrieved using \code{tools::startDynamicHelp(NA)}. }
+  }
+}
+
+\section{Changes in version 0.9-55}{
+	\itemize{
+    \item{ LICENSE file eliminated. }
+	\item{ No more use of ::: (not allowed by CRAN). }
+  }
+}
+
 \section{Changes in version 0.9-54}{
 	\itemize{
     \item{ NEWS file reworked to use the new Rd format. }
 	\item{ Temporary data are now saved in SciViews:TempEnv environment
-	  (was TempEnv), and one thus needs     s svMisc >= 0.9-68. }
+	  (was TempEnv), and one thus needs svMisc >= 0.9-68. }
   }
 }
 
