@@ -21,7 +21,11 @@ HttpServerPort <- function (port)
 		## This port is stored in 'ko.serve' option
 		options(ko.serve = port)
 		## If the server is running on another port, restart it now
-		curport <- getNamespace("tools")$httpdPort
+		if (R.Version()$`svn rev` >= 67550) {
+			curport <- tools::startDynamicHelp(NA)
+		} else {
+			curport <- getNamespace("tools")$httpdPort
+		}
 		if (curport > 0 && curport != port) startHttpServer(port = port)
 		return(port)
 	} else {  # Get the server port
@@ -132,27 +136,48 @@ name = HttpServerName())
 		stop("'port' must be a positive integer!")
 	port <- as.integer(round(port[1]))
 	## The port on which the server currently runs
-	curport <- getNamespace("tools")$httpdPort
-	
-	## Can we run the server?
-	if (curport == -1L || nzchar(Sys.getenv("R_DISABLE_HTTPD")))
-		stop("R http server is disabled or cannot start")
-	
-	## If it is currently running, stop it now
-	if (curport != 0L) {
-		if (curport != port)
-			warning("R http server currently running on port ", curport,
-				" and is restarted on port ", port, immediate. = TRUE)
-		curport <- stopHttpServer()
-	}
-	
-	## Start the http server on the right port
-	if (curport == 0L) {
+	if (R.Version()$`svn rev` >= 67550) {
 		oports <- getOption("help.ports")
 		(on.exit(options(help.ports = oports)))
 		options(help.ports = port)
-		curport <- tools::startDynamicHelp()
-	} else stop("Unable to start the http server")
+		curport <- tools::startDynamicHelp(NA)
+		
+		## Can we run the server?
+		if (curport == -1L || nzchar(Sys.getenv("R_DISABLE_HTTPD")))
+			stop("R http server is disabled or cannot start")
+		
+		## If curport is not the right one, try restarting
+		if (curport != 0L) {
+			if (curport != port)
+				warning("R http server currently running on port ", curport,
+					" and is restarted on port ", port, immediate. = TRUE)
+			stopHttpServer()
+			curport <- tools::startDynamicHelp(TRUE)
+		}
+		
+	} else { # Old code before startDynamicHelp(NA)
+		curport <- getNamespace("tools")$httpdPort
+		
+		## Can we run the server?
+		if (curport == -1L || nzchar(Sys.getenv("R_DISABLE_HTTPD")))
+			stop("R http server is disabled or cannot start")
+		
+		## If it is currently running, stop it now
+		if (curport != 0L) {
+			if (curport != port)
+				warning("R http server currently running on port ", curport,
+					" and is restarted on port ", port, immediate. = TRUE)
+			curport <- stopHttpServer()
+		}
+		
+		## Start the http server on the right port
+		if (curport == 0L) {
+			oports <- getOption("help.ports")
+			(on.exit(options(help.ports = oports)))
+			options(help.ports = port)
+			curport <- tools::startDynamicHelp()
+		} else stop("Unable to start the http server")
+	}
 	
 	## Is the HTTP server running on the right port now?
 	if (curport == port) {
