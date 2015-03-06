@@ -57,6 +57,29 @@ parHttp(client, \dots)
 
 \seealso{ \code{\link[svSocket]{startSocketServer}} }
 
+\examples{
+## Try to start the HTTP server on default port with default name
+res <- try(startHttpServer(), silent = TRUE)
+if (!inherits(res, "try-error")) {
+    ## Get the port
+    HttpServerPort()
+
+    ## Get the name
+    HttpServerName()
+  
+    ## Get the list of clients... empty, unless you connect a client in between
+    HttpClientsNames()
+  
+    ## Stop the server now
+    stopHttpServer()
+}
+
+## You need to implement a client... see in \etc a simple client implemented
+## in Tcl. You can also look at SciViews-K
+## (http://http://www.sciviews.org/SciViews-K)
+## for an example of a client implemented in Mozilla/JavaScript
+}
+
 \keyword{ IO }
 
 \concept{ interprocess commnunication Komodo }
