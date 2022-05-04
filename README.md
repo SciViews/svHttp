@@ -4,7 +4,6 @@
 
 [![R-CMD-check](https://github.com/SciViews/svHttp/workflows/R-CMD-check/badge.svg)](https://github.com/SciViews/svHttp/actions) [![Win Build Status](https://ci.appveyor.com/api/projects/status/github/SciViews/svHttp?branch=master&svg=true)](https://ci.appveyor.com/project/phgrosjean/svHttp) [![Coverage Status](https://img.shields.io/codecov/c/github/SciViews/svHttp/master.svg)](https://codecov.io/github/SciViews/svHttp?branch=master) [![CRAN Status](https://www.r-pkg.org/badges/version/svHttp)](https://cran.r-project.org/package=svHttp) [![License](https://img.shields.io/badge/license-GPL-blue.svg)](https://www.gnu.org/licenses/gpl-2.0.html) [![Life cycle stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://www.tidyverse.org/lifecycle/#stable)
 
-[![R-CMD-check](https://github.com/SciViews/svHttp/workflows/R-CMD-check/badge.svg)](https://github.com/SciViews/svHttp/actions)
 <!-- badges: end -->
 
 A HTTP server that allows for another process to connect to R and to interact with it as if it was at the command line directly.
