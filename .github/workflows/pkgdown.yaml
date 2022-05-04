@@ -32,6 +32,8 @@ jobs:
         run: |
           install.packages('remotes')
           remotes::install_github("SciViews/svPkgdown")
+        shell: Rscript {0}
+
       - name: Deploy package
         run: |
           git config --local user.name "$GITHUB_ACTOR"
