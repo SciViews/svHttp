@@ -1,0 +1,31 @@
+---
+title: "SciViews HTTP server"
+author: "Philippe Grosjean (phgrosjean@sciviews.org)"
+date: "`r Sys.Date()`"
+output:
+  rmarkdown::html_vignette:
+    fig_caption: yes
+vignette: >
+  %\VignetteIndexEntry{SciViews HTTP server}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+TODO...
+
+Use a HTTP request like this in the client: <http://127.0.0.1:8888/custom/SciViews?msg&callback>. The server returns something like (in a correct RJSONp object): `<callback>({"result":{"String 1", "String 2", "..."}, "options":"<options>", "name":"<server.name>","port":"<port>"})`. Another (simpler) way to call it is by using <http://127.0.0.1:8888/custom/SciViews?msg> and in this case, the client must manage the simple string returned.
+
+The simplest test consists in starting the HTTP server in R:
+
+```{r, eval=FALSE}
+port <- start_http_server()
+```
+
+... and then, open a browser on the same machine and navigate to the following URL: <http://localhost:8888/custom/SciViews?port>. You should read there the port number as an answer (8888).
