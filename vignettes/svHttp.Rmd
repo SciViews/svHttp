@@ -20,7 +20,7 @@ knitr::opts_chunk$set(
 
 # Principle
 
-The {svHttp} package uses an option of the integrated HTML help system in R to develop a simple inter-process communication using plain URLs. It is designed to be the simplest as possible. Yet, it allows also to customize the way the server evaluates R code and sends results back to the client. An {svHttp} server with all default arguments is started in an R process using:
+The {svHttp} package uses an option of the integrated HTML help system in R to develop a simple inter-process communication using URLs. It is designed to be the simplest as possible. Yet, it allows also to customize the way the server evaluates R code and sends results back to the client. An {svHttp} server with all default arguments is started in an R process using:
 
 ```{r}
 library(svHttp)
