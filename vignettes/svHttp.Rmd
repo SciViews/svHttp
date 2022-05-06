@@ -107,4 +107,4 @@ The `stop_http_server()` accepts an argument `remove.clients`, which is `FALSE` 
 
 -   The OpenCPU (<https://www.opencpu.org>) project aims to embed scientific computing in R into a web server. It gives a little bit more control on the way R code is executed and results are returned, but it is a little bit more complex to set up than {svHttp} that appears as more *ad hoc* solution for quick local inter-process computation in R.
 
-There are several other server implementations and inter-process communication protocols implemented for R. See the CRAN task views, in particular, (<https://cran.r-project.org/view=WebTechnologies>){web technologies and services} and the (<https://cran.r-project.org/view=HighPerformanceComputing>){high-performance and parallel computing with R}.
+There are several other server implementations and inter-process communication protocols implemented for R. See the CRAN task views, in particular, [https://cran.r-project.org/view=WebTechnologies](web%20technologies%20and%20services) and the [https://cran.r-project.org/view=HighPerformanceComputing](high-performance%20and%20parallel%20computing%20with%20R).
