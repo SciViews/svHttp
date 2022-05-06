@@ -81,7 +81,7 @@
 </li>
       </ul>
 <div class="navbar-title">
-        <a class="navbar-brand" href="../index.html"><p class="h2">svHttp <small>v1.0.0</small></p></a>
+        <a class="navbar-brand" href="../index.html"><p class="h2">svHttp <small>v1.0.1</small></p></a>
       </div>
     </div>
 <!--/.nav-collapse -->
@@ -100,7 +100,7 @@
       <h1 data-toc-skip>SciViews HTTP server</h1>
                         <h4 data-toc-skip class="author">Philippe Grosjean (<a href="mailto:phgrosjean@sciviews.org" class="email">phgrosjean@sciviews.org</a>)</h4>
             
-            <h4 data-toc-skip class="date">2022-05-04</h4>
+            <h4 data-toc-skip class="date">2022-05-06</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/SciViews/svHttp/blob/HEAD/vignettes/svHttp.Rmd" class="external-link"><code>vignettes/svHttp.Rmd</code></a></small>
       <div class="hidden name"><code>svHttp.Rmd</code></div>
@@ -109,17 +109,92 @@
 
     
     
-<p>TODO…</p>
-<p>Use a HTTP request like this in the client: <a href="http://127.0.0.1:8888/custom/SciViews?msg&amp;callback" class="external-link uri">http://127.0.0.1:8888/custom/SciViews?msg&amp;callback</a>. The server returns something like (in a correct RJSONp object): <code>&lt;callback&gt;({"result":{"String 1", "String 2", "..."}, "options":"&lt;options&gt;", "name":"&lt;server.name&gt;","port":"&lt;port&gt;"})</code>. Another (simpler) way to call it is by using <a href="http://127.0.0.1:8888/custom/SciViews?msg" class="external-link uri">http://127.0.0.1:8888/custom/SciViews?msg</a> and in this case, the client must manage the simple string returned.</p>
-<p>The simplest test consists in starting the HTTP server in R:</p>
+<div class="section level2">
+<h2 id="principle">Principle<a class="anchor" aria-label="anchor" href="#principle"></a>
+</h2>
+<p>The {svHttp} package uses an option of the integrated HTML help system in R to develop a simple inter-process communication using plain URLs. It is designed to be the simplest as possible. Yet, it allows also to customize the way the server evaluates R code and sends results back to the client. An {svHttp} server with all default arguments is started in an R process using:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">port</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/start_http_server.html">start_http_server</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
-<p>… and then, open a browser on the same machine and navigate to the following URL: <a href="http://localhost:8888/custom/SciViews?port" class="external-link uri">http://localhost:8888/custom/SciViews?port</a>. You should read there the port number as an answer (8888).</p>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/SciViews/svHttp" class="external-link">svHttp</a></span><span class="op">)</span>
+<span class="va">server_port</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/start_http_server.html">start_http_server</a></span><span class="op">(</span><span class="op">)</span>
+<span class="co">#&gt; starting httpd help server ... done</span>
+<span class="co">#&gt; starting httpd help server ... done</span>
+<span class="va">server_port</span>
+<span class="co">#&gt; [1] 8888</span></code></pre></div>
+<p>The default port is 8888, but it can be changed with the <code>port =</code> argument in <code><a href="../reference/start_http_server.html">start_http_server()</a></code> (the name of the server can also be changes with <code>name =</code> and modified or retrieved with <code><a href="../reference/http_server_name.html">http_server_name()</a></code>).</p>
+<p>Since there is only one HTML help system in R, starting the {svHttp} server most probably asks for a different port that the one previously chosen by R. In this case the R HTML help system is forced to close and to reopen with the requested port. There is no consequences for help pages displayed later on. A minor annoyance is in R &gt;= 4.2.0 where preexisting HTML help pages may not respond any more. In this case, just close and display the help page again to restore its full features.</p>
+<p>On the client side on the same machine, a simple HTTP request can be used to execute R code. It only works locally to avoid security issues because the communication is simple and not encrypted (the HTTPS protocol is <strong>not</strong> available). The URL is <code>localhost:port/custom/SciViews</code> with an argument being the URL encoded R code to execute.</p>
+<p>For instance to execute <code>2 - 1</code>, you could use the URL <code>http://localhost:8888/custom/SciViews?2-1</code>. With the {svHttp} server started on the default port 8888 in R, if you use this URL in any local web browser, you will get a page with <code>[1] -1</code>. This is the output R produces when the same instruction <code>2 - 1</code> is issued at the R console. Within a separate terminal, you can also issue <code>curl 'http://localhost:8888/custom/SciViews?2-1'</code> and obtain the same result. <strong>By default, the {svHttp} server produces the same, or very similar outputs to what would be issued at the R console if the same command was issued there.</strong> This is useful to implement a remote R console inside another application.</p>
+<p>To get the content of an R variable, just use its name as message, as usual at the R prompt. You can get the content of <code>server_port</code> with the URL <code>http://localhost:8888/custom/SciViews?server_port</code>.</p>
+</div>
+<div class="section level2">
+<h2 id="implementing-a-client">Implementing a client<a class="anchor" aria-label="anchor" href="#implementing-a-client"></a>
+</h2>
+<p>In R you can use, for instance, the {curl} package on the client. Here is a function that captures output of an R command on the {svHttp} server (note that the server sometimes issues a 500 error code while it still processes the command correctly, so make sure to catch that case too).</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">http_server_run</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">cmd</span>, <span class="va">port</span> <span class="op">=</span> <span class="fl">8888</span><span class="op">)</span> <span class="op">{</span>
+  <span class="co"># cmd is a string containing the command to process. We have to URLencode it</span>
+  <span class="va">cmd</span> <span class="op">&lt;-</span> <span class="fu">utils</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/utils/URLencode.html" class="external-link">URLencode</a></span><span class="op">(</span><span class="va">cmd</span><span class="op">)</span>
+  <span class="va">url</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"http://localhost:"</span>, <span class="va">port</span>, <span class="st">"/custom/SciViews?"</span>, <span class="va">cmd</span><span class="op">)</span>
+  <span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">curl</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/curl/man/curl_fetch.html" class="external-link">curl_fetch_memory</a></span><span class="op">(</span><span class="va">url</span><span class="op">)</span>
+  <span class="kw">if</span> <span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">status_code</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">200</span>, <span class="fl">500</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span><span class="co"># Should be OK</span>
+    <span class="fu"><a href="https://rdrr.io/r/base/rawConversion.html" class="external-link">rawToChar</a></span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">content</span><span class="op">)</span>
+  <span class="op">}</span> <span class="kw">else</span> <span class="kw">if</span> <span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">status_code</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span>
+    <span class="kw"><a href="https://rdrr.io/r/base/stop.html" class="external-link">stop</a></span><span class="op">(</span><span class="st">"Error while executing "</span>, <span class="va">url</span>, <span class="st">": error "</span>, <span class="va">res</span><span class="op">$</span><span class="va">status_code</span><span class="op">)</span>
+  <span class="op">}</span>
+<span class="op">}</span></code></pre></div>
+<p>Now, you could run arbitrary R commands in the {svHttp} server and get back the console output it produces. <strong>Note: do not use this function in the <em>same</em> R process where the {svHttp} server runs.</strong> As it is blocking, you would end up in a deadlock situation!</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu">http_server_run</span><span class="op">(</span><span class="st">"R.version"</span><span class="op">)</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu">http_server_run</span><span class="op">(</span><span class="st">"http_server_name()"</span><span class="op">)</span><span class="op">)</span>
+<span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">http_server_run</span><span class="op">(</span><span class="st">"ls()"</span><span class="op">)</span>
+<span class="co"># Now you could do whatever you want with res</span>
+<span class="va">res</span></code></pre></div>
+<div class="section level3">
+<h3 id="callback-argument">Callback argument<a class="anchor" aria-label="anchor" href="#callback-argument"></a>
+</h3>
+<p>A second argument can be passed to the URL: the name of a callback function. That way, the client gets this information to process the result send by the {svHttp} server. The URL is then <code>http://localhost:port/custom/SciViews?code&amp;callback</code>. Also, there are numerous ways to customize the behavior of the {svHttp} server, see <code><a href="../reference/par_http_server.html">?par_http_server</a></code>. A complete client written in JavaScript is implemented here: <a href="https://github.com/SciViews/sciviewsk/blob/master/content/js/socket.js" class="external-link uri">https://github.com/SciViews/sciviewsk/blob/master/content/js/socket.js</a>. You could get inspiration from there to develop your own client application.</p>
+</div>
+</div>
+<div class="section level2">
+<h2 id="utilities-on-the-server-side">Utilities on the server-side<a class="anchor" aria-label="anchor" href="#utilities-on-the-server-side"></a>
+</h2>
+<p>Several functions are provided to manage the {svHttp} server on the R process where it runs. You can get or change the port or the name of the server with dedicated functions:</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/http_server_port.html">http_server_port</a></span><span class="op">(</span><span class="op">)</span>
+<span class="co">#&gt; [1] 8888</span>
+<span class="fu"><a href="../reference/http_server_name.html">http_server_name</a></span><span class="op">(</span><span class="op">)</span>
+<span class="co">#&gt; [1] "R"</span>
+<span class="co"># Change the name</span>
+<span class="fu"><a href="../reference/http_server_name.html">http_server_name</a></span><span class="op">(</span><span class="st">"myHttpServer"</span><span class="op">)</span>
+<span class="co">#&gt; [1] "myHttpServer"</span></code></pre></div>
+<p>At anytime, you can get an idea of the clients that are currently connected to the {svHttp} server (it can serve multiple clients at the same time, but it will , of course, process commands one at a time and the other clients are put on hold). There is a special client named <code>"default"</code> which process all requests by clients that did not identified themselves properly.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/http_server_clients.html">http_server_clients</a></span><span class="op">(</span><span class="op">)</span>
+<span class="co">#&gt; character(0)</span></code></pre></div>
+<p>Identification of clients is mandatory to allow further customization of the {svHttp} server in a stateful way. Again, examine the code here (<a href="https://github.com/SciViews/sciviewsk/blob/master/content/js/socket.js" class="external-link uri">https://github.com/SciViews/sciviewsk/blob/master/content/js/socket.js</a>) for an example of complete implementation of all the features the {svHttp} server provides.</p>
+<p>Finally, it is possible to close the {svHttp} server, but keep in mind that you also close the internal R HTML help service at the same time. This would only affect currently displayed help pages, since R would reopen the server automatically at the next help request.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/stop_http_server.html">stop_http_server</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<p>The <code><a href="../reference/stop_http_server.html">stop_http_server()</a></code> accepts an argument <code>remove.clients</code>, which is <code>FALSE</code> by default. If set to <code>TRUE</code>, the stateful configuration of registered clients is also deleted.</p>
+</div>
+<div class="section level2">
+<h2 id="alternate-solutions">Alternate solutions<a class="anchor" aria-label="anchor" href="#alternate-solutions"></a>
+</h2>
+<ul>
+<li><p>To create a web API with defined functions, you can use {plumber}, see <a href="https://www.rplumber.io" class="external-link uri">https://www.rplumber.io</a>. Where {svHttp} allows for a simple, generic connection to an R process locally through an URL (any R command can be issued), {plumber} provides a defined set of actions. This allows to get a more secure server by restricting commands that the client can issue in the R process. However, a little bit more work is required to define the {plumber} API. The {svHttp} server also aims to replicate the behavior of R at the command prompt through URL requests, which is not the purpose of {plumber}.</p></li>
+<li><p>The {svSocket} package (see <a href="https://www.sciviews.org/svSocket/" class="external-link uri">https://www.sciviews.org/svSocket/</a>) follows a very similar approach to {svHttp} but using sockets. This allows for more flexibility, and one has more control on the interactions between the client and the server. However, implementing an {svSocket} client is a little bit more complex.</p></li>
+<li><p>The {Rserve} package provides a binary R server. When R objects are transferred from the R server to the client, they are binary converted into their Java counterparts. This could be useful to transfer large R objects to a client written in Java. However, both {svHttp} and {svSocket} are more suitable to implement a remote R console in an application written in any language.</p></li>
+<li><p>The OpenCPU (<a href="https://www.opencpu.org" class="external-link uri">https://www.opencpu.org</a>) project aims to embed scientific computing in R into a web server. It gives a little bit more control on the way R code is executed and results are returned, but it is a little bit more complex to set up than {svHttp} that appears as more <em>ad hoc</em> solution for quick local inter-process computation in R.</p></li>
+</ul>
+<p>There are several other server implementations and inter-process communication protocols implemented for R. See the CRAN task views, in particular, (<a href="https://cran.r-project.org/view=WebTechnologies" class="external-link uri">https://cran.r-project.org/view=WebTechnologies</a>){web technologies and services} and the (<a href="https://cran.r-project.org/view=HighPerformanceComputing" class="external-link uri">https://cran.r-project.org/view=HighPerformanceComputing</a>){high-performance and parallel computing with R}.</p>
+</div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
 
-      </div>
+        <nav id="toc" data-toggle="toc"><h2 data-toc-skip>Contents</h2>
+    </nav>
+</div>
 
 </div>
 
