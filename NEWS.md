@@ -1,3 +1,7 @@
+# svHttp 1.0.1
+
+-   The vignette is completed.
+
 # svHttp 1.0.0
 
 -   All functions are renamed to use snake_case, e.g., `startHttpServer()` is renamed `start_http_server()`. Old names remain for backward compatibility, but they are deprecated.

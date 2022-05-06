@@ -1,7 +1,7 @@
 Package: svHttp
 Type: Package
-Version: 1.0.0
-Date: 2022-05-04
+Version: 1.0.1
+Date: 2022-05-05
 Title: 'SciViews' - HTTP Server
 Description: A simple HTTP server allows to connect GUI clients to R.
 Authors@R: c(person("Philippe", "Grosjean", role = c("aut", "cre"),
@@ -10,7 +10,7 @@ Authors@R: c(person("Philippe", "Grosjean", role = c("aut", "cre"),
 Maintainer: Philippe Grosjean <phgrosjean@sciviews.org>
 Depends: R (>= 2.11.0)
 Imports: tools, svMisc (>= 0.9-68), utils
-Suggests: svSocket, spelling, covr, knitr, rmarkdown
+Suggests: svSocket, curl, spelling, covr, knitr, rmarkdown
 License: GPL-2
 URL: https://github.com/SciViews/svHttp, https://www.sciviews.org/svHttp/
 BugReports: https://github.com/SciViews/svHttp/issues

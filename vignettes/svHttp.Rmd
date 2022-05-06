@@ -18,14 +18,93 @@ knitr::opts_chunk$set(
 )
 ```
 
-TODO...
+# Principle
 
-Use a HTTP request like this in the client: <http://127.0.0.1:8888/custom/SciViews?msg&callback>. The server returns something like (in a correct RJSONp object): `<callback>({"result":{"String 1", "String 2", "..."}, "options":"<options>", "name":"<server.name>","port":"<port>"})`. Another (simpler) way to call it is by using <http://127.0.0.1:8888/custom/SciViews?msg> and in this case, the client must manage the simple string returned.
+The {svHttp} package uses an option of the integrated HTML help system in R to develop a simple inter-process communication using plain URLs. It is designed to be the simplest as possible. Yet, it allows also to customize the way the server evaluates R code and sends results back to the client. An {svHttp} server with all default arguments is started in an R process using:
 
-The simplest test consists in starting the HTTP server in R:
-
-```{r, eval=FALSE}
-port <- start_http_server()
+```{r}
+library(svHttp)
+server_port <- start_http_server()
+server_port
 ```
 
-... and then, open a browser on the same machine and navigate to the following URL: <http://localhost:8888/custom/SciViews?port>. You should read there the port number as an answer (8888).
+The default port is 8888, but it can be changed with the `port =` argument in `start_http_server()` (the name of the server can also be changes with `name =` and modified or retrieved with `http_server_name()`).
+
+Since there is only one HTML help system in R, starting the {svHttp} server most probably asks for a different port that the one previously chosen by R. In this case the R HTML help system is forced to close and to reopen with the requested port. There is no consequences for help pages displayed later on. A minor annoyance is in R \>= 4.2.0 where preexisting HTML help pages may not respond any more. In this case, just close and display the help page again to restore its full features.
+
+On the client side on the same machine, a simple HTTP request can be used to execute R code. It only works locally to avoid security issues because the communication is simple and not encrypted (the HTTPS protocol is **not** available). The URL is `localhost:port/custom/SciViews` with an argument being the URL encoded R code to execute.
+
+For instance to execute `2 - 1`, you could use the URL `http://localhost:8888/custom/SciViews?2-1`. With the {svHttp} server started on the default port 8888 in R, if you use this URL in any local web browser, you will get a page with `[1] -1`. This is the output R produces when the same instruction `2 - 1` is issued at the R console. Within a separate terminal, you can also issue `curl 'http://localhost:8888/custom/SciViews?2-1'` and obtain the same result. **By default, the {svHttp} server produces the same, or very similar outputs to what would be issued at the R console if the same command was issued there.** This is useful to implement a remote R console inside another application.
+
+To get the content of an R variable, just use its name as message, as usual at the R prompt. You can get the content of `server_port` with the URL `http://localhost:8888/custom/SciViews?server_port`.
+
+# Implementing a client
+
+In R you can use, for instance, the {curl} package on the client. Here is a function that captures output of an R command on the {svHttp} server (note that the server sometimes issues a 500 error code while it still processes the command correctly, so make sure to catch that case too).
+
+```{r}
+http_server_run <- function(cmd, port = 8888) {
+  # cmd is a string containing the command to process. We have to URLencode it
+  cmd <- utils::URLencode(cmd)
+  url <- paste0("http://localhost:", port, "/custom/SciViews?", cmd)
+  res <- curl::curl_fetch_memory(url)
+  if (res$status_code %in% c(200, 500)) {# Should be OK
+    rawToChar(res$content)
+  } else if (res$status_code > 0) {
+    stop("Error while executing ", url, ": error ", res$status_code)
+  }
+}
+```
+
+Now, you could run arbitrary R commands in the {svHttp} server and get back the console output it produces. **Note: do not use this function in the *same* R process where the {svHttp} server runs.** As it is blocking, you would end up in a deadlock situation!
+
+```{r, eval=FALSE}
+cat(http_server_run("R.version"))
+cat(http_server_run("http_server_name()"))
+res <- http_server_run("ls()")
+# Now you could do whatever you want with res
+res
+```
+
+## Callback argument
+
+A second argument can be passed to the URL: the name of a callback function. That way, the client gets this information to process the result send by the {svHttp} server. The URL is then `http://localhost:port/custom/SciViews?code&callback`. Also, there are numerous ways to customize the behavior of the {svHttp} server, see `?par_http_server`. A complete client written in JavaScript is implemented here: <https://github.com/SciViews/sciviewsk/blob/master/content/js/socket.js>. You could get inspiration from there to develop your own client application.
+
+# Utilities on the server-side
+
+Several functions are provided to manage the {svHttp} server on the R process where it runs. You can get or change the port or the name of the server with dedicated functions:
+
+```{r}
+http_server_port()
+http_server_name()
+# Change the name
+http_server_name("myHttpServer")
+```
+
+At anytime, you can get an idea of the clients that are currently connected to the {svHttp} server (it can serve multiple clients at the same time, but it will , of course, process commands one at a time and the other clients are put on hold). There is a special client named `"default"` which process all requests by clients that did not identified themselves properly.
+
+```{r}
+http_server_clients()
+```
+
+Identification of clients is mandatory to allow further customization of the {svHttp} server in a stateful way. Again, examine the code here (<https://github.com/SciViews/sciviewsk/blob/master/content/js/socket.js>) for an example of complete implementation of all the features the {svHttp} server provides.
+
+Finally, it is possible to close the {svHttp} server, but keep in mind that you also close the internal R HTML help service at the same time. This would only affect currently displayed help pages, since R would reopen the server automatically at the next help request.
+
+```{r}
+stop_http_server()
+```
+
+The `stop_http_server()` accepts an argument `remove.clients`, which is `FALSE` by default. If set to `TRUE`, the stateful configuration of registered clients is also deleted.
+
+# Alternate solutions
+
+-   To create a web API with defined functions, you can use {plumber}, see <https://www.rplumber.io>. Where {svHttp} allows for a simple, generic connection to an R process locally through an URL (any R command can be issued), {plumber} provides a defined set of actions. This allows to get a more secure server by restricting commands that the client can issue in the R process. However, a little bit more work is required to define the {plumber} API. The {svHttp} server also aims to replicate the behavior of R at the command prompt through URL requests, which is not the purpose of {plumber}.
+
+-   The {svSocket} package (see <https://www.sciviews.org/svSocket/>) follows a very similar approach to {svHttp} but using sockets. This allows for more flexibility, and one has more control on the interactions between the client and the server. However, implementing an {svSocket} client is a little bit more complex.
+
+-   The {Rserve} package provides a binary R server. When R objects are transferred from the R server to the client, they are binary converted into their Java counterparts. This could be useful to transfer large R objects to a client written in Java. However, both {svHttp} and {svSocket} are more suitable to implement a remote R console in an application written in any language.
+
+-   The OpenCPU (<https://www.opencpu.org>) project aims to embed scientific computing in R into a web server. It gives a little bit more control on the way R code is executed and results are returned, but it is a little bit more complex to set up than {svHttp} that appears as more *ad hoc* solution for quick local inter-process computation in R.
+
+There are several other server implementations and inter-process communication protocols implemented for R. See the CRAN task views, in particular, (<https://cran.r-project.org/view=WebTechnologies>){web technologies and services} and the (<https://cran.r-project.org/view=HighPerformanceComputing>){high-performance and parallel computing with R}.
