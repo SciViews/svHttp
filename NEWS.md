@@ -1,3 +1,7 @@
+# svHttp 1.0.3
+
+-   Correction of two links in the vignette.
+
 # svHttp 1.0.2
 
 -   Silent checking of current port in `start_http_server()` and `http_server_port()`.
