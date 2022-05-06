@@ -16,6 +16,7 @@ A character vector with the name of currently connected clients.
 Get list of all names of clients that already connected to the http server
 }
 \examples{
+library(svHttp)
 http_server_clients()
 }
 \seealso{
