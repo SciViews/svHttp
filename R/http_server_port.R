@@ -18,7 +18,10 @@ http_server_port <- function(port) {
     options(http.server.port = port)
     # If the server is running on another port, restart it now
     if (R.Version()$`svn rev` >= 67550) {
-      curport <- tools::startDynamicHelp(NA)
+      curport <- try(suppressMessages(tools::startDynamicHelp(NA)),
+        silent = TRUE)
+      if (inherits(curport, "try-error"))
+        curport <- 0
     } else {
       curport <- getNamespace("tools")$httpdPort
     }

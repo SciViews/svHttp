@@ -1,7 +1,7 @@
 Package: svHttp
 Type: Package
-Version: 1.0.1
-Date: 2022-05-05
+Version: 1.0.2
+Date: 2022-05-06
 Title: 'SciViews' - HTTP Server
 Description: A simple HTTP server allows to connect GUI clients to R.
 Authors@R: c(person("Philippe", "Grosjean", role = c("aut", "cre"),

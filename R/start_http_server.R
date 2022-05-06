@@ -14,6 +14,7 @@
 #' @keywords IO
 #' @concept Interprocess communication
 #' @examples
+#' library(svHttp)
 #' # Try to start the HTTP server on default port with default name
 #' res <- try(start_http_server(), silent = TRUE)
 #' if (!inherits(res, "try-error")) {
@@ -44,7 +45,9 @@ name = http_server_name()) {
     oports <- getOption("help.ports")
     (on.exit(options(help.ports = oports)))
     options(help.ports = port)
-    curport <- tools::startDynamicHelp(NA)
+    curport <- try(suppressMessages(tools::startDynamicHelp(NA)), silent = TRUE)
+    if (inherits(curport, "try-error"))
+      curport <- 0
 
     # Can we run the server?
     if (curport == -1L || nzchar(Sys.getenv("R_DISABLE_HTTPD")))

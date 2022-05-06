@@ -6,6 +6,7 @@
 #' @keywords IO
 #' @concept Interprocess communication
 #' @examples
+#' library(svHttp)
 #' http_server_clients()
 http_server_clients <- function() {
   sub("^http_client_", "", ls(envir = temp_env(), pattern = "^http_client_"))
