@@ -81,7 +81,7 @@
 </li>
       </ul>
 <div class="navbar-title">
-        <a class="navbar-brand" href="../index.html"><p class="h2">svHttp <small>v1.0.3</small></p></a>
+        <a class="navbar-brand" href="../index.html"><p class="h2">svHttp <small>v1.0.4</small></p></a>
       </div>
     </div>
 <!--/.nav-collapse -->
@@ -100,7 +100,7 @@
       <h1 data-toc-skip>SciViews HTTP server</h1>
                         <h4 data-toc-skip class="author">Philippe Grosjean (<a href="mailto:phgrosjean@sciviews.org" class="email">phgrosjean@sciviews.org</a>)</h4>
             
-            <h4 data-toc-skip class="date">2022-05-06</h4>
+            <h4 data-toc-skip class="date">2022-05-09</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/SciViews/svHttp/blob/HEAD/vignettes/svHttp.Rmd" class="external-link"><code>vignettes/svHttp.Rmd</code></a></small>
       <div class="hidden name"><code>svHttp.Rmd</code></div>
@@ -116,9 +116,7 @@
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/SciViews/svHttp" class="external-link">svHttp</a></span><span class="op">)</span>
 <span class="va">server_port</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/start_http_server.html">start_http_server</a></span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt; starting httpd help server ... done</span>
-<span class="va">server_port</span>
-<span class="co">#&gt; [1] 8888</span></code></pre></div>
+<span class="va">server_port</span></code></pre></div>
 <p>The default port is 8888, but it can be changed with the <code>port =</code> argument in <code><a href="../reference/start_http_server.html">start_http_server()</a></code> (the name of the server can also be changes with <code>name =</code> and modified or retrieved with <code><a href="../reference/http_server_name.html">http_server_name()</a></code>).</p>
 <p>Since there is only one HTML help system in R, starting the {svHttp} server most probably asks for a different port that the one previously chosen by R. In this case the R HTML help system is forced to close and to reopen with the requested port. There is no consequences for help pages displayed later on. A minor annoyance is in R &gt;= 4.2.0 where preexisting HTML help pages may not respond any more. In this case, just close and display the help page again to restore its full features.</p>
 <p>On the client side on the same machine, a simple HTTP request can be used to execute R code. It only works locally to avoid security issues because the communication is simple and not encrypted (the HTTPS protocol is <strong>not</strong> available). The URL is <code>localhost:port/custom/SciViews</code> with an argument being the URL encoded R code to execute.</p>
