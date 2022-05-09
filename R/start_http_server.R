@@ -10,7 +10,7 @@
 #'
 #' @return An integer indicating the port used.
 #' @export
-#' @seealso [svSocket::startSocketServer()]
+#' @seealso [svSocket::start_socket_server()]
 #' @keywords IO
 #' @concept Interprocess communication
 #' @examples
@@ -56,8 +56,8 @@ name = http_server_name()) {
     # If curport is not the right one, try restarting
     if (curport != 0L) {
       if (curport != port)
-        warning("R http server currently running on port ", curport,
-          " and is restarted on port ", port, immediate. = TRUE)
+        message("R http server currently running on port ", curport,
+          " and is restarted on port ", port)
       stop_http_server()
       curport <- tools::startDynamicHelp(TRUE)
     }
@@ -72,8 +72,8 @@ name = http_server_name()) {
     # If it is currently running, stop it now
     if (curport != 0L) {
       if (curport != port)
-        warning("R http server currently running on port ", curport,
-          " and is restarted on port ", port, immediate. = TRUE)
+        message("R http server currently running on port ", curport,
+          " and is restarted on port ", port)
       curport <- stop_http_server()
     }
 

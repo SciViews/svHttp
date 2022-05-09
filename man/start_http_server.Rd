@@ -42,7 +42,7 @@ if (!inherits(res, "try-error")) {
 }
 }
 \seealso{
-\code{\link[svSocket:startSocketServer]{svSocket::startSocketServer()}}
+\code{\link[svSocket:start_socket_server]{svSocket::start_socket_server()}}
 }
 \concept{Interprocess communication}
 \keyword{IO}

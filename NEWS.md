@@ -1,3 +1,7 @@
+# svHttp 1.0.4
+
+-   A link to `svSocket::start_socket_server()`is updated.
+
 # svHttp 1.0.3
 
 -   Correction of two links in the vignette.

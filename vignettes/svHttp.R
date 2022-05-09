@@ -4,12 +4,25 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 
-## -----------------------------------------------------------------------------
-library(svHttp)
-server_port <- start_http_server()
+## ----start_server, eval=FALSE-------------------------------------------------
+#  library(svHttp)
+#  server_port <- start_http_server()
+#  server_port
+
+## ----no_server_version, include=FALSE-----------------------------------------
+server_ready <- FALSE
+
+## ----wait, include=FALSE, warning=TRUE, error=TRUE----------------------------
+# Launch the server
+server_port <- 0L
+res <- try({
+  library(svHttp)
+  server_port <- start_http_server()
+  }, silent = TRUE)
+server_ready <- !inherits(res, "try-error")
 server_port
 
-## -----------------------------------------------------------------------------
+## ----run_server_function------------------------------------------------------
 http_server_run <- function(cmd, port = 8888) {
   # cmd is a string containing the command to process. We have to URLencode it
   cmd <- utils::URLencode(cmd)
@@ -22,22 +35,25 @@ http_server_run <- function(cmd, port = 8888) {
   }
 }
 
-## ---- eval=FALSE--------------------------------------------------------------
+## ----run_sever_examples, eval=FALSE-------------------------------------------
 #  cat(http_server_run("R.version"))
 #  cat(http_server_run("http_server_name()"))
 #  res <- http_server_run("ls()")
 #  # Now you could do whatever you want with res
 #  res
 
-## -----------------------------------------------------------------------------
-http_server_port()
-http_server_name()
-# Change the name
-http_server_name("myHttpServer")
+## ----server_infos, eval=server_ready------------------------------------------
+#  http_server_port()
+#  http_server_name()
+#  # Change the name
+#  http_server_name("myHttpServer")
 
-## -----------------------------------------------------------------------------
-http_server_clients()
+## ----get_clients, eval=server_ready-------------------------------------------
+#  http_server_clients()
 
-## -----------------------------------------------------------------------------
-stop_http_server()
+## ----stop_server, eval=FALSE--------------------------------------------------
+#  stop_http_server()
+
+## ----try_stop_server, include=FALSE, warning=TRUE, error=TRUE-----------------
+try(stop_http_server(), silent = TRUE)
 

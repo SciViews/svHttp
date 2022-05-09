@@ -22,9 +22,24 @@ knitr::opts_chunk$set(
 
 The {svHttp} package uses an option of the integrated HTML help system in R to develop a simple inter-process communication using URLs. It is designed to be the simplest as possible. Yet, it allows also to customize the way the server evaluates R code and sends results back to the client. An {svHttp} server with all default arguments is started in an R process using:
 
-```{r}
+```{r start_server, eval=FALSE}
 library(svHttp)
 server_port <- start_http_server()
+server_port
+```
+
+```{r no_server_version, include=FALSE}
+server_ready <- FALSE
+```
+
+```{r wait, include=FALSE, warning=TRUE, error=TRUE}
+# Launch the server
+server_port <- 0L
+res <- try({
+  library(svHttp)
+  server_port <- start_http_server()
+  }, silent = TRUE)
+server_ready <- !inherits(res, "try-error")
 server_port
 ```
 
@@ -42,7 +57,7 @@ To get the content of an R variable, just use its name as message, as usual at t
 
 In R you can use, for instance, the {curl} package on the client. Here is a function that captures output of an R command on the {svHttp} server (note that the server sometimes issues a 500 error code while it still processes the command correctly, so make sure to catch that case too).
 
-```{r}
+```{r run_server_function}
 http_server_run <- function(cmd, port = 8888) {
   # cmd is a string containing the command to process. We have to URLencode it
   cmd <- utils::URLencode(cmd)
@@ -58,7 +73,7 @@ http_server_run <- function(cmd, port = 8888) {
 
 Now, you could run arbitrary R commands in the {svHttp} server and get back the console output it produces. **Note: do not use this function in the *same* R process where the {svHttp} server runs.** As it is blocking, you would end up in a deadlock situation!
 
-```{r, eval=FALSE}
+```{r run_sever_examples, eval=FALSE}
 cat(http_server_run("R.version"))
 cat(http_server_run("http_server_name()"))
 res <- http_server_run("ls()")
@@ -74,7 +89,7 @@ A second argument can be passed to the URL: the name of a callback function. Tha
 
 Several functions are provided to manage the {svHttp} server on the R process where it runs. You can get or change the port or the name of the server with dedicated functions:
 
-```{r}
+```{r server_infos, eval=server_ready}
 http_server_port()
 http_server_name()
 # Change the name
@@ -83,7 +98,7 @@ http_server_name("myHttpServer")
 
 At anytime, you can get an idea of the clients that are currently connected to the {svHttp} server (it can serve multiple clients at the same time, but it will , of course, process commands one at a time and the other clients are put on hold). There is a special client named `"default"` which process all requests by clients that did not identified themselves properly.
 
-```{r}
+```{r get_clients, eval=server_ready}
 http_server_clients()
 ```
 
@@ -91,8 +106,12 @@ Identification of clients is mandatory to allow further customization of the {sv
 
 Finally, it is possible to close the {svHttp} server, but keep in mind that you also close the internal R HTML help service at the same time. This would only affect currently displayed help pages, since R would reopen the server automatically at the next help request.
 
-```{r}
+```{r stop_server, eval=FALSE}
 stop_http_server()
+```
+
+```{r try_stop_server, include=FALSE, warning=TRUE, error=TRUE}
+try(stop_http_server(), silent = TRUE)
 ```
 
 The `stop_http_server()` accepts an argument `remove.clients`, which is `FALSE` by default. If set to `TRUE`, the stateful configuration of registered clients is also deleted.
