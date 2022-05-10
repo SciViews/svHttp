@@ -14,6 +14,7 @@
 #' @keywords IO
 #' @concept Interprocess communication
 #' @examples
+#' \dontrun{
 #' library(svHttp)
 #' # Try to start the HTTP server on default port with default name
 #' res <- try(start_http_server(), silent = TRUE)
@@ -21,13 +22,14 @@
 #'   # Get the port
 #'   http_server_port()
 #'
-#'  # Get the name
-#'  http_server_name()
+#'   # Get the name
+#'   http_server_name()
 #'
-#'  # Get the list of clients... empty, unless you connect a client in between
-#'  http_server_clients()
+#'   # Get the list of clients... empty, unless you connect a client in between
+#'   http_server_clients()
 #'
-#'  # Stop the server now
+#' }
+#' # Stop the server now
 #'  stop_http_server()
 #' }
 start_http_server <- function(port = http_server_port(),

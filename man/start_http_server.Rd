@@ -24,6 +24,7 @@ Turn the default R help HTTP server into a RJSONp SciViews
 server (while still serving help pages, of course).
 }
 \examples{
+\dontrun{
 library(svHttp)
 # Try to start the HTTP server on default port with default name
 res <- try(start_http_server(), silent = TRUE)
@@ -31,13 +32,14 @@ if (!inherits(res, "try-error")) {
   # Get the port
   http_server_port()
 
- # Get the name
- http_server_name()
+  # Get the name
+  http_server_name()
 
- # Get the list of clients... empty, unless you connect a client in between
- http_server_clients()
+  # Get the list of clients... empty, unless you connect a client in between
+  http_server_clients()
 
- # Stop the server now
+}
+# Stop the server now
  stop_http_server()
 }
 }
