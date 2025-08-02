@@ -3,7 +3,7 @@ pkgdown: 2.1.3
 pkgdown_sha: ~
 articles:
   svHttp: svHttp.html
-last_built: 2025-08-02T10:35Z
+last_built: 2025-08-02T11:04Z
 urls:
   reference: https://www.sciviews.org/svHttp/reference
   article: https://www.sciviews.org/svHttp/articles
