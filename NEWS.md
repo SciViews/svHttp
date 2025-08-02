@@ -1,3 +1,7 @@
+# svHttp 1.0.5
+
+-   Updated CITATION file to the new format.-   
+
 # svHttp 1.0.4
 
 -   A link to `svSocket::start_socket_server()`is updated.
