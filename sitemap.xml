@@ -1,54 +1,20 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://www.sciviews.org/svHttp/404.html</loc>
-  </url>
-  <url>
-    <loc>https://www.sciviews.org/svHttp/CODE_OF_CONDUCT.html</loc>
-  </url>
-  <url>
-    <loc>https://www.sciviews.org/svHttp/LICENSE.html</loc>
-  </url>
-  <url>
-    <loc>https://www.sciviews.org/svHttp/TODO.html</loc>
-  </url>
-  <url>
-    <loc>https://www.sciviews.org/svHttp/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>https://www.sciviews.org/svHttp/articles/svHttp.html</loc>
-  </url>
-  <url>
-    <loc>https://www.sciviews.org/svHttp/authors.html</loc>
-  </url>
-  <url>
-    <loc>https://www.sciviews.org/svHttp/index.html</loc>
-  </url>
-  <url>
-    <loc>https://www.sciviews.org/svHttp/news/index.html</loc>
-  </url>
-  <url>
-    <loc>https://www.sciviews.org/svHttp/reference/http_server_clients.html</loc>
-  </url>
-  <url>
-    <loc>https://www.sciviews.org/svHttp/reference/http_server_name.html</loc>
-  </url>
-  <url>
-    <loc>https://www.sciviews.org/svHttp/reference/http_server_port.html</loc>
-  </url>
-  <url>
-    <loc>https://www.sciviews.org/svHttp/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>https://www.sciviews.org/svHttp/reference/par_http_server.html</loc>
-  </url>
-  <url>
-    <loc>https://www.sciviews.org/svHttp/reference/start_http_server.html</loc>
-  </url>
-  <url>
-    <loc>https://www.sciviews.org/svHttp/reference/stop_http_server.html</loc>
-  </url>
-  <url>
-    <loc>https://www.sciviews.org/svHttp/reference/svHttp-package.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>https://www.sciviews.org/svHttp/404.html</loc></url>
+<url><loc>https://www.sciviews.org/svHttp/CODE_OF_CONDUCT.html</loc></url>
+<url><loc>https://www.sciviews.org/svHttp/LICENSE.html</loc></url>
+<url><loc>https://www.sciviews.org/svHttp/TODO.html</loc></url>
+<url><loc>https://www.sciviews.org/svHttp/articles/index.html</loc></url>
+<url><loc>https://www.sciviews.org/svHttp/articles/svHttp.html</loc></url>
+<url><loc>https://www.sciviews.org/svHttp/authors.html</loc></url>
+<url><loc>https://www.sciviews.org/svHttp/index.html</loc></url>
+<url><loc>https://www.sciviews.org/svHttp/news/index.html</loc></url>
+<url><loc>https://www.sciviews.org/svHttp/reference/http_server_clients.html</loc></url>
+<url><loc>https://www.sciviews.org/svHttp/reference/http_server_name.html</loc></url>
+<url><loc>https://www.sciviews.org/svHttp/reference/http_server_port.html</loc></url>
+<url><loc>https://www.sciviews.org/svHttp/reference/index.html</loc></url>
+<url><loc>https://www.sciviews.org/svHttp/reference/par_http_server.html</loc></url>
+<url><loc>https://www.sciviews.org/svHttp/reference/start_http_server.html</loc></url>
+<url><loc>https://www.sciviews.org/svHttp/reference/stop_http_server.html</loc></url>
+<url><loc>https://www.sciviews.org/svHttp/reference/svHttp-package.html</loc></url>
 </urlset>
+
