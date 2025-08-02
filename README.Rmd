@@ -13,7 +13,7 @@ knitr::opts_chunk$set(collapse = TRUE, comment = "#>",
 
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/SciViews/svHttp/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/SciViews/svHttp/actions/workflows/R-CMD-check.yaml)
-[![Codecov test coverage](https://codecov.io/gh/SciViews/svHttp/branch/main/graph/badge.svg)](https://app.codecov.io/gh/SciViews/svHttp?branch=main)
+[![codecov](https://codecov.io/gh/SciViews/svHttp/graph/badge.svg?token=7pFvANuW8O)](https://codecov.io/gh/SciViews/svHttp)
 [![CRAN Status](https://www.r-pkg.org/badges/version/svHttp)](https://cran.r-project.org/package=svHttp)
 [![r-universe status](https://sciviews.r-universe.dev/badges/svHttp)](https://sciviews.r-universe.dev/svHttp)
 [![License](https://img.shields.io/badge/license-GPL-blue.svg)](https://www.gnu.org/licenses/gpl-2.0.html)
