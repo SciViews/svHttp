@@ -1,26 +1,25 @@
 ---
-title: "SciViews HTTP server"
+title: "'SciViews::R' - HTTP Server"
 author: "Philippe Grosjean (phgrosjean@sciviews.org)"
 date: "`r Sys.Date()`"
 output:
   rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 3
     fig_caption: yes
 vignette: >
-  %\VignetteIndexEntry{SciViews HTTP server}
+  %\VignetteIndexEntry{'SciViews::R' - HTTP Server}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
 ```
 
-# Principle
+> The {svHttp} package uses an option of the integrated HTML help system in R to develop a simple inter-process communication using URLs. It is designed to be the simplest as possible. Yet, it allows also to customize the way the server evaluates R code and sends results back to the client.
 
-The {svHttp} package uses an option of the integrated HTML help system in R to develop a simple inter-process communication using URLs. It is designed to be the simplest as possible. Yet, it allows also to customize the way the server evaluates R code and sends results back to the client. An {svHttp} server with all default arguments is started in an R process using:
+An {svHttp} server with all default arguments is started in an R process using:
 
 ```{r start_server, eval=FALSE}
 library(svHttp)
@@ -53,7 +52,7 @@ For instance to execute `2 - 1`, you could use the URL `http://localhost:8888/cu
 
 To get the content of an R variable, just use its name as message, as usual at the R prompt. You can get the content of `server_port` with the URL `http://localhost:8888/custom/SciViews?server_port`.
 
-# Implementing a client
+## Implementing a client
 
 In R you can use, for instance, the {curl} package on the client. Here is a function that captures output of an R command on the {svHttp} server (note that the server sometimes issues a 500 error code while it still processes the command correctly, so make sure to catch that case too).
 
@@ -81,11 +80,11 @@ res <- http_server_run("ls()")
 res
 ```
 
-## Callback argument
+### Callback argument
 
 A second argument can be passed to the URL: the name of a callback function. That way, the client gets this information to process the result send by the {svHttp} server. The URL is then `http://localhost:port/custom/SciViews?code&callback`. Also, there are numerous ways to customize the behavior of the {svHttp} server, see `?par_http_server`. A complete client written in JavaScript is implemented here: <https://github.com/SciViews/sciviewsk/blob/master/content/js/socket.js>. You could get inspiration from there to develop your own client application.
 
-# Utilities on the server-side
+## Utilities on the server-side
 
 Several functions are provided to manage the {svHttp} server on the R process where it runs. You can get or change the port or the name of the server with dedicated functions:
 
@@ -116,7 +115,7 @@ try(stop_http_server(), silent = TRUE)
 
 The `stop_http_server()` accepts an argument `remove.clients`, which is `FALSE` by default. If set to `TRUE`, the stateful configuration of registered clients is also deleted.
 
-# Alternate solutions
+## Alternate solutions
 
 -   To create a web API with defined functions, you can use {plumber}, see <https://www.rplumber.io>. Where {svHttp} allows for a simple, generic connection to an R process locally through an URL (any R command can be issued), {plumber} provides a defined set of actions. This allows to get a more secure server by restricting commands that the client can issue in the R process. However, a little bit more work is required to define the {plumber} API. The {svHttp} server also aims to replicate the behavior of R at the command prompt through URL requests, which is not the purpose of {plumber}.
 

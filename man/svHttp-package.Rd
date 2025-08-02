@@ -4,13 +4,11 @@
 \name{svHttp-package}
 \alias{svHttp}
 \alias{svHttp-package}
-\title{svHttp: 'SciViews' - HTTP Server}
+\title{'SciViews::R' - HTTP Server}
 \description{
-A simple HTTP server allows to connect GUI clients to R.
+A SciViews R server using HTTP R help server and JSONP for communication.
 }
 \details{
-A SciViews R server using HTTP R help server and JSONP for communication.
-
 See \code{\link[=start_http_server]{start_http_server()}} for further implementation details.
 }
 \seealso{
@@ -18,6 +16,7 @@ Useful links:
 \itemize{
   \item \url{https://github.com/SciViews/svHttp}
   \item \url{https://www.sciviews.org/svHttp/}
+  \item \url{https://sciviews.r-universe.dev/svHttp}
   \item Report bugs at \url{https://github.com/SciViews/svHttp/issues}
 }
 
@@ -26,4 +25,3 @@ Useful links:
 \strong{Maintainer}: Philippe Grosjean \email{phgrosjean@sciviews.org} (\href{https://orcid.org/0000-0002-2694-9471}{ORCID})
 
 }
-\keyword{internal}
